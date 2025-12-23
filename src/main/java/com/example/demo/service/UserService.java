@@ -18,11 +18,11 @@ public class UserService {
         return repo.save(user);
     }
 
-    public List<User> findAll() {
+    public List<User> getAll() {
         return repo.findAll();
     }
 
-    public User findById(Long id) {
+    public User getById(Long id) {
         return repo.findById(id).orElse(null);
     }
 }
