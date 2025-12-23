@@ -1,7 +1,7 @@
 package com.example.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.demo.entity.User;
+import com.example.demo.entity.Event;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface EventRepository extends JpaRepository<Event, Long> {
 }
