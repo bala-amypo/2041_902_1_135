@@ -2,31 +2,26 @@ package com.example.demo.controller;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
+import com.example.demo.entity.Subscription;
+import com.example.demo.service.SubscriptionService;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/subscriptions")
+public class SubscriptionController {
 
-    private final UserService service;
+    private final SubscriptionService service;
 
-    public UserController(UserService service) {
+    public SubscriptionController(SubscriptionService service) {
         this.service = service;
     }
 
     @PostMapping
-    public User create(@RequestBody User user) {
-        return service.save(user);
+    public Subscription create(@RequestBody Subscription sub) {
+        return service.save(sub);
     }
 
     @GetMapping
-    public List<User> getAll() {
-        return service.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public User getById(@PathVariable Long id) {
-        return service.findById(id);
+    public List<Subscription> getAll() {
+        return service.getAll();
     }
 }

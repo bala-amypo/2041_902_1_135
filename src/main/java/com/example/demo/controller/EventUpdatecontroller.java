@@ -2,31 +2,26 @@ package com.example.demo.controller;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
+import com.example.demo.entity.EventUpdate;
+import com.example.demo.service.EventUpdateService;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/updates")
+public class EventUpdateController {
 
-    private final UserService service;
+    private final EventUpdateService service;
 
-    public UserController(UserService service) {
+    public EventUpdateController(EventUpdateService service) {
         this.service = service;
     }
 
     @PostMapping
-    public User create(@RequestBody User user) {
-        return service.save(user);
+    public EventUpdate create(@RequestBody EventUpdate update) {
+        return service.save(update);
     }
 
     @GetMapping
-    public List<User> getAll() {
-        return service.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public User getById(@PathVariable Long id) {
-        return service.findById(id);
+    public List<EventUpdate> getAll() {
+        return service.getAll();
     }
 }

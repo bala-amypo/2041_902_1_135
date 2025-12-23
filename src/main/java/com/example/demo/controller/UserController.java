@@ -22,11 +22,11 @@ public class UserController {
 
     @GetMapping
     public List<User> getAll() {
-        return service.findAll();
+        return service.getAll();
     }
 
     @GetMapping("/{id}")
     public User getById(@PathVariable Long id) {
-        return service.findById(id);
+        return service.getById(id);
     }
 }
