@@ -2,31 +2,26 @@ package com.example.demo.controller;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
+import com.example.demo.entity.BroadcastLog;
+import com.example.demo.service.BroadcastService;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/broadcasts")
+public class BroadcastController {
 
-    private final UserService service;
+    private final BroadcastService service;
 
-    public UserController(UserService service) {
+    public BroadcastController(BroadcastService service) {
         this.service = service;
     }
 
     @PostMapping
-    public User create(@RequestBody User user) {
-        return service.save(user);
+    public BroadcastLog create(@RequestBody BroadcastLog log) {
+        return service.save(log);
     }
 
     @GetMapping
-    public List<User> getAll() {
-        return service.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public User getById(@PathVariable Long id) {
-        return service.findById(id);
+    public List<BroadcastLog> getAll() {
+        return service.getAll();
     }
 }
