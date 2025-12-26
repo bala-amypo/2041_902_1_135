@@ -1,17 +1,22 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
-
-@Entity
 public class EventUpdate {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String message;
 
-    private Long eventId;
-    private String updateContent;
-    private String updateType;
+    public Long getId() {
+        return id;
+    }
 
-    // getters & setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
