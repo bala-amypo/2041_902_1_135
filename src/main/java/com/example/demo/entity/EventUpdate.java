@@ -20,4 +20,3 @@ public class EventUpdate {
         this.message = message;
     }
 }
-\
