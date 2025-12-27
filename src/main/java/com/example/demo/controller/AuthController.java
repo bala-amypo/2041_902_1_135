@@ -1,38 +1,61 @@
-package com.example.demo.controller;
+// package com.example.demo.controller;
 
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.entity.Role;
-import com.example.demo.entity.User;
-import com.example.demo.security.JwtUtil;
-import com.example.demo.service.UserService;
-import org.springframework.web.bind.annotation.*;
+// import com.example.demo.entity.User;
+// import com.example.demo.security.JwtUtil;
+// import com.example.demo.service.UserService;
 
-@RestController
-@RequestMapping("/auth")
-public class AuthController {
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.security.crypto.password.PasswordEncoder;
+// import org.springframework.web.bind.annotation.PostMapping;
+// import org.springframework.web.bind.annotation.RequestBody;
+// import org.springframework.web.bind.annotation.RequestMapping;
+// import org.springframework.web.bind.annotation.RestController;
 
-    private final UserService userService;
-    private final JwtUtil jwtUtil;
+// import java.util.HashMap;
+// import java.util.Map;
 
-    public AuthController(UserService userService, JwtUtil jwtUtil) {
-        this.userService = userService;
-        this.jwtUtil = jwtUtil;
-    }
+// @RestController
+// @RequestMapping("/auth")
+// public class AuthController {
 
-    @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest req) {
-        User u = new User();
-        u.setFullName(req.getFullName());
-        u.setEmail(req.getEmail());
-        u.setPassword(req.getPassword());
-        u.setRole(Role.valueOf(req.getRole()));
-        return userService.register(u);
-    }
+//     private final UserService userService;
+//     private final PasswordEncoder passwordEncoder;
+//     private final JwtUtil jwtUtil;
 
-    @PostMapping("/login")
-    public String login(@RequestBody LoginRequest req) {
-        User u = userService.findByEmail(req.getEmail());
-        return jwtUtil.generateToken(u.getId(), u.getEmail(), u.getRole().name());
-    }
-}
+//     public AuthController(UserService userService,
+//                           PasswordEncoder passwordEncoder,
+//                           JwtUtil jwtUtil) {
+//         this.userService = userService;
+//         this.passwordEncoder = passwordEncoder;
+//         this.jwtUtil = jwtUtil;
+//     }
+
+//     // REGISTER
+//     @PostMapping("/register")
+//     public ResponseEntity<User> register(@RequestBody User user) {
+//         User savedUser = userService.register(user);
+//         return ResponseEntity.ok(savedUser);
+//     }
+
+//     // LOGIN
+//     @PostMapping("/login")
+//     public ResponseEntity<Map<String, String>> login(@RequestBody User request) {
+
+//         User user = userService.findByEmail(request.getEmail());
+
+//         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+//             throw new RuntimeException("Invalid credentials");
+//         }
+
+//         String token = jwtUtil.generateToken(
+//                 user.getId(),
+//                 user.getEmail(),
+//                 user.getRole().name()
+//         );
+
+//         Map<String, String> response = new HashMap<>();
+//         response.put("token", token);
+
+//         return ResponseEntity.ok(response);
+//     }
+// }

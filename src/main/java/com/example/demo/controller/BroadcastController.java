@@ -2,7 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.BroadcastLog;
 import com.example.demo.service.BroadcastService;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -17,12 +22,12 @@ public class BroadcastController {
     }
 
     @PostMapping("/trigger/{updateId}")
-    public void trigger(@PathVariable Long updateId) {
-        broadcastService.broadcastUpdate(updateId);
+    public void triggerBroadcast(@PathVariable Long updateId) {
+        broadcastService.triggerBroadcast(updateId);
     }
 
     @GetMapping("/logs/{updateId}")
-    public List<BroadcastLog> logs(@PathVariable Long updateId) {
+    public List<BroadcastLog> getLogs(@PathVariable Long updateId) {
         return broadcastService.getLogsForUpdate(updateId);
     }
 }
