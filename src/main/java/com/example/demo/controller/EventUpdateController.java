@@ -2,7 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.EventUpdate;
 import com.example.demo.service.EventUpdateService;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -22,12 +28,12 @@ public class EventUpdateController {
     }
 
     @GetMapping("/event/{eventId}")
-    public List<EventUpdate> byEvent(@PathVariable Long eventId) {
+    public List<EventUpdate> getForEvent(@PathVariable Long eventId) {
         return eventUpdateService.getUpdatesForEvent(eventId);
     }
 
     @GetMapping("/{id}")
-    public EventUpdate get(@PathVariable Long id) {
-        return eventUpdateService.getById(id);
+    public EventUpdate getById(@PathVariable Long id) {
+        return eventUpdateService.getUpdateById(id);
     }
 }
