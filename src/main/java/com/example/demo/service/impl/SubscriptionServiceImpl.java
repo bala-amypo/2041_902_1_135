@@ -1,17 +1,19 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.Event;
 import com.example.demo.entity.Subscription;
+import com.example.demo.entity.User;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.EventRepository;
 import com.example.demo.repository.SubscriptionRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.SubscriptionService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
-
     private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
@@ -27,33 +29,35 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public Subscription subscribe(Long userId, Long eventId) {
         if (subscriptionRepository.existsByUserIdAndEventId(userId, eventId)) {
-            throw new IllegalArgumentException("Already subscribed");
+            throw new BadRequestException("Already subscribed");
         }
 
-        Subscription s = new Subscription();
-        s.setUser(userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found")));
-        s.setEvent(eventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("Event not found")));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
-        return subscriptionRepository.save(s);
+        Subscription subscription = new Subscription();
+        subscription.setUser(user);
+        subscription.setEvent(event);
+        
+        return subscriptionRepository.save(subscription);
     }
 
     @Override
     public void unsubscribe(Long userId, Long eventId) {
-        Subscription s = subscriptionRepository
-                .findByUserIdAndEventId(userId, eventId)
-                .orElseThrow(() -> new IllegalArgumentException("Subscription not found"));
-        subscriptionRepository.delete(s);
-    }
-
-    @Override
-    public boolean isSubscribed(Long userId, Long eventId) {
-        return subscriptionRepository.existsByUserIdAndEventId(userId, eventId);
+        Subscription subscription = subscriptionRepository.findByUserIdAndEventId(userId, eventId)
+                .orElseThrow(() -> new BadRequestException("Subscription not found"));
+        subscriptionRepository.delete(subscription);
     }
 
     @Override
     public List<Subscription> getUserSubscriptions(Long userId) {
         return subscriptionRepository.findByUserId(userId);
+    }
+
+    @Override
+    public boolean isSubscribed(Long userId, Long eventId) {
+        return subscriptionRepository.existsByUserIdAndEventId(userId, eventId);
     }
 }
