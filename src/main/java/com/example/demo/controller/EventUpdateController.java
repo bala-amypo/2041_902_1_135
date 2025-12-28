@@ -2,38 +2,36 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.EventUpdate;
 import com.example.demo.service.EventUpdateService;
-
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/updates")
+@Tag(name = "Event Updates")
 public class EventUpdateController {
-
     private final EventUpdateService eventUpdateService;
 
     public EventUpdateController(EventUpdateService eventUpdateService) {
         this.eventUpdateService = eventUpdateService;
     }
 
-    @PostMapping
-    public EventUpdate publish(@RequestBody EventUpdate update) {
-        return eventUpdateService.publishUpdate(update);
+    @PostMapping("/")
+    public ResponseEntity<EventUpdate> publishUpdate(@RequestBody EventUpdate eventUpdate) {
+        EventUpdate savedUpdate = eventUpdateService.publishUpdate(eventUpdate);
+        return ResponseEntity.ok(savedUpdate);
     }
 
     @GetMapping("/event/{eventId}")
-    public List<EventUpdate> getForEvent(@PathVariable Long eventId) {
-        return eventUpdateService.getUpdatesForEvent(eventId);
+    public ResponseEntity<List<EventUpdate>> getUpdatesForEvent(@PathVariable Long eventId) {
+        List<EventUpdate> updates = eventUpdateService.getUpdatesForEvent(eventId);
+        return ResponseEntity.ok(updates);
     }
 
     @GetMapping("/{id}")
-    public EventUpdate getById(@PathVariable Long id) {
-        return eventUpdateService.getUpdateById(id);
+    public ResponseEntity<EventUpdate> getUpdateById(@PathVariable Long id) {
+        EventUpdate update = eventUpdateService.getUpdateById(id);
+        return ResponseEntity.ok(update);
     }
 }
