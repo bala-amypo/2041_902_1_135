@@ -2,17 +2,19 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.BroadcastLog;
 import com.example.demo.entity.DeliveryStatus;
+import com.example.demo.entity.EventUpdate;
+import com.example.demo.entity.Subscription;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.BroadcastLogRepository;
 import com.example.demo.repository.EventUpdateRepository;
 import com.example.demo.repository.SubscriptionRepository;
 import com.example.demo.service.BroadcastService;
 import org.springframework.stereotype.Service;
-
+import java.time.Instant;
 import java.util.List;
 
 @Service
 public class BroadcastServiceImpl implements BroadcastService {
-
     private final EventUpdateRepository eventUpdateRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final BroadcastLogRepository broadcastLogRepository;
@@ -27,18 +29,19 @@ public class BroadcastServiceImpl implements BroadcastService {
 
     @Override
     public void broadcastUpdate(Long updateId) {
-        var update = eventUpdateRepository.findById(updateId)
-                .orElseThrow(() -> new IllegalArgumentException("Update not found"));
+        EventUpdate eventUpdate = eventUpdateRepository.findById(updateId)
+                .orElseThrow(() -> new ResourceNotFoundException("EventUpdate not found"));
 
-        var subs = subscriptionRepository.findByEventId(update.getEvent().getId());
+        List<Subscription> subscriptions = subscriptionRepository.findByEventId(eventUpdate.getEvent().getId());
 
-        subs.forEach(s -> {
+        for (Subscription subscription : subscriptions) {
             BroadcastLog log = new BroadcastLog();
-            log.setEventUpdate(update);
-            log.setSubscriber(s.getUser());
+            log.setEventUpdate(eventUpdate);
+            log.setSubscriber(subscription.getUser());
             log.setDeliveryStatus(DeliveryStatus.SENT);
+            log.setSentAt(Instant.now());
             broadcastLogRepository.save(log);
-        });
+        }
     }
 
     @Override
@@ -47,12 +50,13 @@ public class BroadcastServiceImpl implements BroadcastService {
     }
 
     @Override
-    public void recordDelivery(Long updateId, Long userId, boolean success) {
+    public void recordDelivery(Long updateId, Long subscriberId, boolean success) {
         List<BroadcastLog> logs = broadcastLogRepository.findByEventUpdateId(updateId);
         for (BroadcastLog log : logs) {
-            if (log.getSubscriber().getId().equals(userId)) {
+            if (log.getSubscriber().getId().equals(subscriberId)) {
                 log.setDeliveryStatus(success ? DeliveryStatus.SENT : DeliveryStatus.FAILED);
                 broadcastLogRepository.save(log);
+                break;
             }
         }
     }
