@@ -1,75 +1,49 @@
- package com.example.demo.entity;
+package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-
+import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
+@Table(name = "event_updates")
 public class EventUpdate {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    //  TEST EXPECTS Instant
-    private Instant timestamp;
+    @Column(nullable = false)
+    private String updateContent;
 
     @Enumerated(EnumType.STRING)
     private SeverityLevel severityLevel;
 
- 
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    
-    public Instant getTimestamp() {
-        return timestamp;
-    }
-
-
-    public void setTimestamp(Instant timestamp) {
-        this.timestamp = timestamp;
-    }
-
-
-    public SeverityLevel getSeverityLevel() {
-        return severityLevel;
-    }
-
-
-    public void setSeverityLevel(SeverityLevel severityLevel) {
-        this.severityLevel = severityLevel;
-    }
+    @Column(nullable = false)
+    private Instant timestamp;
 
     @PrePersist
     public void onCreate() {
-        if (this.timestamp == null) {
-            this.timestamp = Instant.now();
-        }
+        this.timestamp = Instant.now();
         if (this.severityLevel == null) {
             this.severityLevel = SeverityLevel.LOW;
         }
     }
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Event getEvent() { return event; }
+    public void setEvent(Event event) { this.event = event; }
+
+    public String getUpdateContent() { return updateContent; }
+    public void setUpdateContent(String updateContent) { this.updateContent = updateContent; }
+
+    public SeverityLevel getSeverityLevel() { return severityLevel; }
+    public void setSeverityLevel(SeverityLevel severityLevel) { this.severityLevel = severityLevel; }
+
+    public Instant getTimestamp() { return timestamp; }
+    public void setTimestamp(Instant timestamp) { this.timestamp = timestamp; }
 }

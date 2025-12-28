@@ -1,44 +1,42 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-
+import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
+@Table(name = "events")
 public class Event {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
     private String location;
+
     private String category;
 
-    private boolean isActive = true;
-
-    @ManyToOne
-    @JoinColumn(name = "publisher_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "publisher_id", nullable = false)
     private User publisher;
 
-    private Instant createdAt;
-    private Instant lastUpdatedAt;
+    @Column(nullable = false)
+    private boolean isActive = true;
 
-    // ===== JPA LIFECYCLE =====
+    @Column(nullable = false)
+    private Instant createdAt;
+
+    private Instant lastUpdatedAt;
 
     @PrePersist
     public void onCreate() {
-        Instant now = Instant.now();
-        this.createdAt = now;
-        this.lastUpdatedAt = now;
+        this.createdAt = Instant.now();
+        this.lastUpdatedAt = Instant.now();
         this.isActive = true;
     }
 
@@ -47,30 +45,10 @@ public class Event {
         this.lastUpdatedAt = Instant.now();
     }
 
-    // ===== GETTERS / SETTERS (TEST EXPECTED) =====
-
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public boolean isActive() { return isActive; }
-    public Boolean getIsActive() { return isActive; }
-
-    // 🔴 REQUIRED by service + tests
-    public void setActive(boolean active) {
-        this.isActive = active;
-    }
-
-    public User getPublisher() { return publisher; }
-    public void setPublisher(User publisher) { this.publisher = publisher; }
-
-    public Instant getCreatedAt() { return createdAt; }
-    public Instant getLastUpdatedAt() { return lastUpdatedAt; }
-
-    public void setLastUpdatedAt(Instant lastUpdatedAt) {
-        this.lastUpdatedAt = lastUpdatedAt;
-    }
-
-    // optional but safe
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
@@ -82,4 +60,16 @@ public class Event {
 
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+
+    public User getPublisher() { return publisher; }
+    public void setPublisher(User publisher) { this.publisher = publisher; }
+
+    public boolean isActive() { return isActive; }
+    public void setActive(boolean active) { isActive = active; }
+
+    public Instant getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getLastUpdatedAt() { return lastUpdatedAt; }
+    public void setLastUpdatedAt(Instant lastUpdatedAt) { this.lastUpdatedAt = lastUpdatedAt; }
 }
