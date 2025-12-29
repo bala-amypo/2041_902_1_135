@@ -8,24 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/broadcasts")
-@Tag(name = "Broadcasts")
+@RequestMapping("/broadcasts")
 public class BroadcastController {
+
     private final BroadcastService broadcastService;
 
     public BroadcastController(BroadcastService broadcastService) {
         this.broadcastService = broadcastService;
-    }
-
-    @PostMapping("/trigger/{updateId}")
-    public ResponseEntity<Void> triggerBroadcast(@PathVariable Long updateId) {
-        broadcastService.broadcastUpdate(updateId);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/logs/{updateId}")
-    public ResponseEntity<List<BroadcastLog>> getBroadcastLogs(@PathVariable Long updateId) {
-        List<BroadcastLog> logs = broadcastService.getLogsForUpdate(updateId);
-        return ResponseEntity.ok(logs);
     }
 }

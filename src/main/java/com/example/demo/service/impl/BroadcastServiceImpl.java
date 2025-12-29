@@ -1,45 +1,39 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
-import com.example.demo.repository.*;
+import com.example.demo.entity.Broadcast;
+import com.example.demo.repository.BroadcastRepository;
 import com.example.demo.service.BroadcastService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service   // ⭐ THIS IS THE KEY
 public class BroadcastServiceImpl implements BroadcastService {
 
-    private final EventUpdateRepository updateRepo;
-    private final SubscriptionRepository subRepo;
-    private final BroadcastLogRepository logRepo;
+    private final BroadcastRepository repository;
 
-    public BroadcastServiceImpl(EventUpdateRepository u, SubscriptionRepository s, BroadcastLogRepository l) {
-        this.updateRepo = u;
-        this.subRepo = s;
-        this.logRepo = l;
+    public BroadcastServiceImpl(BroadcastRepository repository) {
+        this.repository = repository;
     }
 
-    public void broadcastUpdate(Long updateId) {
-        EventUpdate update = updateRepo.findById(updateId).orElseThrow();
-        List<Subscription> subs = subRepo.findByEventId(update.getEvent().getId());
-        for (Subscription s : subs) {
-            BroadcastLog log = new BroadcastLog();
-            log.setEventUpdate(update);
-            log.setSubscriber(s.getUser());
-            logRepo.save(log);
-        }
+    @Override
+    public Broadcast createBroadcast(Broadcast broadcast) {
+        return repository.save(broadcast);
     }
 
-    public void recordDelivery(Long updateId, Long userId, boolean success) {
-        List<BroadcastLog> logs = logRepo.findByEventUpdateId(updateId);
-        for (BroadcastLog log : logs) {
-            if (log.getSubscriber().getId().equals(userId)) {
-                log.setDeliveryStatus(success ? DeliveryStatus.SENT : DeliveryStatus.FAILED);
-                logRepo.save(log);
-            }
-        }
+    @Override
+    public List<Broadcast> getAllBroadcasts() {
+        return repository.findAll();
     }
 
-    public List<BroadcastLog> getLogsForUpdate(Long id) {
-        return logRepo.findByEventUpdateId(id);
+    @Override
+    public Broadcast getBroadcastById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Broadcast not found"));
+    }
+
+    @Override
+    public void deleteBroadcast(Long id) {
+        repository.deleteById(id);
     }
 }
