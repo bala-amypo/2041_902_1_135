@@ -13,13 +13,17 @@ public class JwtUtil {
     private final String secretKey;
     private final long expirationMs;
 
-    // ✅ REQUIRED by tests
+    // ✅ Required by test cases
     public JwtUtil(String secretKey, long expirationMs) {
         this.secretKey = secretKey;
         this.expirationMs = expirationMs;
     }
 
-    // ✅ Generate JWT with userId + role
+    // --------------------------------------------------
+    // TOKEN GENERATION
+    // --------------------------------------------------
+
+    // Used by AuthController + tests
     public String generateToken(Long userId, String username, String role) {
 
         Map<String, Object> claims = new HashMap<>();
@@ -35,7 +39,10 @@ public class JwtUtil {
                 .compact();
     }
 
-    // ✅ Validate token
+    // --------------------------------------------------
+    // VALIDATION (used by tests)
+    // --------------------------------------------------
+
     public boolean validateToken(String token) {
         try {
             Claims claims = extractAllClaims(token);
@@ -45,24 +52,42 @@ public class JwtUtil {
         }
     }
 
-    // ✅ Extract username
+    // --------------------------------------------------
+    // CLAIM EXTRACTION (used by tests)
+    // --------------------------------------------------
+
     public String getUsernameFromToken(String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    // ✅ Extract userId
     public Long getUserIdFromToken(String token) {
         Object value = extractAllClaims(token).get("userId");
         return value == null ? null : Long.valueOf(value.toString());
     }
 
-    // ✅ Extract role
     public String getRoleFromToken(String token) {
         Object value = extractAllClaims(token).get("role");
         return value == null ? null : value.toString();
     }
 
-    // 🔒 Internal helper
+    // --------------------------------------------------
+    // BACKWARD COMPATIBILITY (used by JwtAuthenticationFilter)
+    // --------------------------------------------------
+
+    // JwtAuthenticationFilter expects this
+    public boolean isTokenValid(String token) {
+        return validateToken(token);
+    }
+
+    // JwtAuthenticationFilter expects this
+    public String extractUsername(String token) {
+        return getUsernameFromToken(token);
+    }
+
+    // --------------------------------------------------
+    // INTERNAL HELPER
+    // --------------------------------------------------
+
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)

@@ -6,4 +6,9 @@ import java.util.List;
 public interface EventUpdateService {
 
     List<EventUpdate> getUpdatesForEvent(Long eventId);
+
+    // ✅ REQUIRED FOR CONTROLLER
+    EventUpdate publishUpdate(EventUpdate update);
+
+    EventUpdate getUpdateById(Long id);
 }
