@@ -4,7 +4,10 @@ import com.example.demo.entity.BroadcastLog;
 import java.util.List;
 
 public interface BroadcastService {
+
     void broadcastUpdate(Long updateId);
+
+    void recordDelivery(Long updateId, Long userId, boolean success);
+
     List<BroadcastLog> getLogsForUpdate(Long updateId);
-    void recordDelivery(Long updateId, Long subscriberId, boolean success);
 }

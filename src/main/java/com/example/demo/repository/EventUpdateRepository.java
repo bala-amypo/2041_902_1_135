@@ -9,4 +9,7 @@ public interface EventUpdateRepository {
     Optional<EventUpdate> findById(Long id);
 
     List<EventUpdate> findByEventIdOrderByTimestampAsc(Long eventId);
+
+    // ✅ REQUIRED
+    EventUpdate save(EventUpdate update);
 }
