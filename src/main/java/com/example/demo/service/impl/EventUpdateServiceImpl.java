@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service   // ✅ THIS MAKES IT A SPRING BEAN
+@Service
 public class EventUpdateServiceImpl implements EventUpdateService {
 
     private final EventUpdateRepository repository;
@@ -16,13 +16,21 @@ public class EventUpdateServiceImpl implements EventUpdateService {
         this.repository = repository;
     }
 
+    // ✅ Controller-compatible methods
+
     @Override
-    public EventUpdate createUpdate(EventUpdate update) {
+    public EventUpdate publishUpdate(EventUpdate update) {
         return repository.save(update);
     }
 
     @Override
-    public List<EventUpdate> getUpdatesByEventId(Long eventId) {
+    public EventUpdate getUpdateById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Event update not found"));
+    }
+
+    @Override
+    public List<EventUpdate> getUpdatesForEvent(Long eventId) {
         return repository.findByEventId(eventId);
     }
 }

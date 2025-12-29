@@ -1,45 +1,39 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
-import com.example.demo.exception.*;
-import com.example.demo.repository.*;
+import com.example.demo.entity.Subscription;
+import com.example.demo.repository.SubscriptionRepository;
 import com.example.demo.service.SubscriptionService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class SubscriptionServiceImpl implements SubscriptionService {
 
-    private final SubscriptionRepository repo;
-    private final UserRepository userRepo;
-    private final EventRepository eventRepo;
+    private final SubscriptionRepository repository;
 
-    public SubscriptionServiceImpl(SubscriptionRepository repo, UserRepository userRepo, EventRepository eventRepo) {
-        this.repo = repo;
-        this.userRepo = userRepo;
-        this.eventRepo = eventRepo;
+    public SubscriptionServiceImpl(SubscriptionRepository repository) {
+        this.repository = repository;
     }
 
-    public Subscription subscribe(Long userId, Long eventId) {
-        if (repo.existsByUserIdAndEventId(userId, eventId)) {
-            throw new BadRequestException("Already subscribed");
-        }
-        Subscription s = new Subscription();
-        s.setUser(userRepo.findById(userId).orElseThrow());
-        s.setEvent(eventRepo.findById(eventId).orElseThrow());
-        return repo.save(s);
+    @Override
+    public Subscription createSubscription(Subscription subscription) {
+        return repository.save(subscription);
     }
 
-    public boolean isSubscribed(Long userId, Long eventId) {
-        return repo.existsByUserIdAndEventId(userId, eventId);
+    @Override
+    public Subscription getSubscriptionById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Subscription not found"));
     }
 
-    public void unsubscribe(Long userId, Long eventId) {
-        Subscription s = repo.findByUserIdAndEventId(userId, eventId)
-                .orElseThrow(() -> new BadRequestException("Subscription not found"));
-        repo.delete(s);
+    @Override
+    public List<Subscription> getSubscriptionsByUser(Long userId) {
+        return repository.findByUserId(userId);
     }
 
-    public List<Subscription> getUserSubscriptions(Long userId) {
-        return repo.findByUserId(userId);
+    @Override
+    public void unsubscribe(Long id) {
+        repository.deleteById(id);
     }
 }

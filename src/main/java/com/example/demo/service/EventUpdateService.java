@@ -6,7 +6,10 @@ import java.util.List;
 
 public interface EventUpdateService {
 
-    EventUpdate createUpdate(EventUpdate update);
+    // ✅ matches controller
+    EventUpdate publishUpdate(EventUpdate update);
 
-    List<EventUpdate> getUpdatesByEventId(Long eventId);
+    EventUpdate getUpdateById(Long id);
+
+    List<EventUpdate> getUpdatesForEvent(Long eventId);
 }
