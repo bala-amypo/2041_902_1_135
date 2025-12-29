@@ -5,12 +5,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Component   // ⭐ THIS IS THE FIX
+@Component
 public class JwtUtil {
 
     private final String SECRET_KEY = "secret-key";
-    private final long EXPIRATION_TIME = 1000 * 60 * 60;
+    private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
+    // Generate token
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
@@ -20,11 +21,22 @@ public class JwtUtil {
                 .compact();
     }
 
+    // Extract username
     public String extractUsername(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    // Validate token
+    public boolean isTokenValid(String token) {
+        try {
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 }
