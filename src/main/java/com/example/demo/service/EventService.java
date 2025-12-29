@@ -4,9 +4,14 @@ import com.example.demo.entity.Event;
 import java.util.List;
 
 public interface EventService {
+
     Event createEvent(Event event);
-    Event updateEvent(Long id, Event event);
-    Event getById(Long id);
+
+    Event updateEvent(Long id, Event updatedEvent);
+
     List<Event> getActiveEvents();
+
     void deactivateEvent(Long id);
+
+    Event getById(Long id);
 }
