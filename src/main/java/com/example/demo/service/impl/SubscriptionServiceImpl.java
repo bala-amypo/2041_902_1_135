@@ -17,23 +17,28 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public Subscription createSubscription(Subscription subscription) {
+    public Subscription subscribe(Long userId, Long eventId) {
+        Subscription subscription = new Subscription();
+        subscription.setUserId(userId);
+        subscription.setEventId(eventId);
         return repository.save(subscription);
     }
 
     @Override
-    public Subscription getSubscriptionById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subscription not found"));
+    public void unsubscribe(Long userId, Long eventId) {
+        Subscription subscription =
+                repository.findByUserIdAndEventId(userId, eventId)
+                        .orElseThrow(() -> new RuntimeException("Subscription not found"));
+        repository.delete(subscription);
     }
 
     @Override
-    public List<Subscription> getSubscriptionsByUser(Long userId) {
+    public List<Subscription> getUserSubscriptions(Long userId) {
         return repository.findByUserId(userId);
     }
 
     @Override
-    public void unsubscribe(Long id) {
-        repository.deleteById(id);
+    public boolean isSubscribed(Long userId, Long eventId) {
+        return repository.existsByUserIdAndEventId(userId, eventId);
     }
 }
