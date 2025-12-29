@@ -4,10 +4,11 @@ import com.example.demo.entity.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    // Optional custom queries (safe to keep, won’t affect tests)
-
-    boolean existsByTitle(String title);
+    // REQUIRED FOR getActiveEvents()
+    List<Event> findByActiveTrue();
 }
