@@ -7,11 +7,11 @@ public interface EventService {
 
     Event createEvent(Event event);
 
-    Event getEventById(Long id);
+    Event getById(Long id);               // ✅ FIX #2
 
     List<Event> getAllEvents();
 
-    Event updateEvent(Long id, Event event);
+    List<Event> getActiveEvents();        // ✅ FIX #3
 
-    void deleteEvent(Long id);
+    void deactivateEvent(Long id);        // ✅ FIX #4
 }

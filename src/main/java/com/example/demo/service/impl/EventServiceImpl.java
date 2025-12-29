@@ -7,42 +7,43 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service   // ⭐ THIS IS MANDATORY
+@Service
 public class EventServiceImpl implements EventService {
 
-    private final EventRepository eventRepository;
+    private final EventRepository repository;
 
-    public EventServiceImpl(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
+    public EventServiceImpl(EventRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public Event createEvent(Event event) {
-        return eventRepository.save(event);
+        return repository.save(event);
     }
 
     @Override
-    public Event getEventById(Long id) {
-        return eventRepository.findById(id)
+    public Event getById(Long id) {
+        return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
     }
 
     @Override
     public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+        return repository.findAll();
     }
 
     @Override
-    public Event updateEvent(Long id, Event event) {
-        Event existing = getEventById(id);
-        existing.setTitle(event.getTitle());
-        existing.setDescription(event.getDescription());
-        existing.setDate(event.getDate());
-        return eventRepository.save(existing);
+    public List<Event> getActiveEvents() {
+        return repository.findAll()
+                .stream()
+                .filter(Event::isActive)
+                .toList();
     }
 
     @Override
-    public void deleteEvent(Long id) {
-        eventRepository.deleteById(id);
+    public void deactivateEvent(Long id) {
+        Event event = getById(id);
+        event.setActive(false);
+        repository.save(event);
     }
 }
